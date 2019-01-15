@@ -3,6 +3,9 @@ MCU=atmega328p
 # TODO: fix to SPI programming
 AVRDUDE_FLAGS=-D -P /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A6008j1e-if00-port0 -b 57600 -c arduino
 
+DEFINES=-DBOARD2 -DADF4113
+
+
 # configure binaries.
 CC=avr-gcc
 CXX=avr-g++
@@ -13,21 +16,21 @@ AVRDUDE=avrdude
 # select C dialect
 #CFLAGS = -std=c11
 #CXXFLAGS = -std=c++11
-CFLAGS = -std=gnu11
-CXXFLAGS = -std=gnu++11
+CFLAGS = -std=gnu11 ${DEFINES}
+CXXFLAGS = -std=gnu++11 ${DEFINES}
 
 # generate .d dependency files
 CXXFLAGS += -MMD
 CFLAGS += -MMD
 
 # debug, warning
-#CFLAGS += -g -W -Wall -Werror
-CFLAGS += -g -W -Wall -Werror -Wno-error=unused-parameter -Wno-error=incompatible-pointer-types
+CFLAGS += -g -W -Wall -Werror
+#CFLAGS += -g -W -Wall -Werror -Wno-error=unused-parameter -Wno-error=incompatible-pointer-types
 #CFLAGS += -g -W
-#CXXFLAGS += -g -W -Wall -Werror
-CXXFLAGS += -g -W -Wall -Werror -Wno-error=unused-parameter
+CXXFLAGS += -g -W -Wall -Werror
+#CXXFLAGS += -g -W -Wall -Werror -Wno-error=unused-parameter
 
-# optimalizations
+# optimizations
 #CFLAGS += -Os
 #CXXFLAGS += -Os
 CFLAGS += -O3

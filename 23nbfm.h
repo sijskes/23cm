@@ -1,13 +1,13 @@
 #define F_CPU 		1000000UL
 
-#define BOARD2
-#define ADF4153
+//#define BOARD2
+//#define ADF4153
 #define version		"4.0"
 
 #define F_REF		13000		// in kHz
 #define	IF			69300UL		// in kHz
 
-#define sbi(x,y)	x |= _BV(y) //set bit - using bitwise OR operator 
+#define sbi(x,y)	x |= _BV(y) //set bit - using bitwise OR operator
 #define cbi(x,y)	x &= ~(_BV(y)) //clear bit - using bitwise AND operator
 #define tbi(x,y)	x ^= _BV(y) //toggle bit - using bitwise XOR operator
 #define is_high(x,y) (x & _BV(y) == _BV(y)) //check if the y'th bit of register 'x' is high ... test if its AND with 1 is 1

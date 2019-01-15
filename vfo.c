@@ -1,5 +1,5 @@
 /*
- * loop when in VFO-mode 
+ * loop when in VFO-mode
  */
 #include <avr/io.h>
 #include <stdio.h>
@@ -24,7 +24,7 @@ extern int tx;
 
 char str[16];
 
-int Vfo() 
+int Vfo()
 {
 	int updn;
 
@@ -49,7 +49,7 @@ int Vfo()
 		// handle internal status of trx
 		rxtx();
 
-		// handle encoder 
+		// handle encoder
 		int c = handleRotary();
 		if (c!=0) {
 			freq += c*step;
@@ -58,7 +58,7 @@ int Vfo()
 			// restart timer for inactivity
 			tick = 0;
 		}
-		
+
 		updn = readUpDn();
 		if (updn) {
 			// up/down always in 1kHz steps
@@ -125,7 +125,7 @@ int Memory()
 		// handle internal status of trx
 		rxtx();
 
-		// handle encoder 
+		// handle encoder
 		int c = handleRotary();
 		if (c!=0) {
 			if (c>0) {
@@ -133,7 +133,7 @@ int Memory()
 					selectedMemory = 0;
 			}
 			else {
-				if (--selectedMemory < 0) 
+				if (--selectedMemory < 0)
 					selectedMemory = MAXMEM-1;
 			}
 
@@ -185,7 +185,7 @@ int setSquelch()
 
 
 		for (;;) {
-			// handle encoder 
+			// handle encoder
 			int c = handleRotary();
 			if (c!=0) {
 				if (c>0) {
@@ -227,7 +227,7 @@ int setShift()
 		lcdStr(str);
 
 		for (;;) {
-			// handle encoder 
+			// handle encoder
 			int c = handleRotary();
 			if (c!=0) {
 				if (c>0) {
@@ -266,7 +266,7 @@ int setStep()
 
 
 		for (;;) {
-			// handle encoder 
+			// handle encoder
 			int c = handleRotary();
 			if (c!=0) {
 				if (c>0) {
@@ -316,7 +316,7 @@ int setCTCSS()
 		lcdStr(str);
 
 		for (;;) {
-			// handle encoder 
+			// handle encoder
 			int c = handleRotary();
 			if (c!=0) {
 				if (c>0) {
@@ -346,6 +346,8 @@ void getMemory()
 
 int setMemory(int set)
 {
+    (void)set ;
+    
 	int push;
 
 	for (;;) {
@@ -355,7 +357,7 @@ int setMemory(int set)
 		lcdStr(str);
 
 		for (;;) {
-			// handle encoder 
+			// handle encoder
 			int c = handleRotary();
 			if (c!=0) {
 				if (c>0) {
@@ -363,7 +365,7 @@ int setMemory(int set)
 						selectedMemory = 0;
 				}
 				else {
-					if (--selectedMemory < 0) 
+					if (--selectedMemory < 0)
 						selectedMemory = MAXMEM-1;
 				}
 				break;
@@ -405,7 +407,7 @@ void scanMemory()
 				displayFrequency(freq);
 
 				for (;;) {
-					s = rxtx(); 
+					s = rxtx();
 					if (s > squelchlevel)
 						tick = 0;
 					if (tx || getRotaryPush())
@@ -416,6 +418,12 @@ void scanMemory()
 			}
 		}
 	}
+}
+
+int scanMemory1()
+{
+    scanMemory();
+    return 0;
 }
 
 
@@ -440,7 +448,7 @@ struct MenuStruct memoryMenu[] = {
     { "Squelch ", &getSquelch, &setSquelch},
     { "Shift   ", &getShift, &setShift},
     { "CTCSS   ", &getCTCSS, &setCTCSS},
-    { "Memory scan   ", NULL, &scanMemory},
+    { "Memory scan   ", NULL, &scanMemory1},
 };
 
 int Menu()
@@ -456,7 +464,7 @@ int Menu()
 		lcdStr(menu[i].name);
 
 		if (menu[i].get) menu[i].get();
-	
+
 		// wait for button released
 		while (!(PIND & (1<<PUSH))) ;
 
@@ -464,7 +472,7 @@ int Menu()
 			// don't forget to squelch..
 			readRSSI();
 
-			// handle encoder 
+			// handle encoder
 			int c = handleRotary();
 			if (c!=0) {
 				if (c>0) {
@@ -502,13 +510,13 @@ int MemoryMenu()
 
 	int i=0;
 
-	for (;;) {	
+	for (;;) {
 		lcdCursor(0,1);
 		lcdStr("                ");
 		lcdCursor(0,1);
 		lcdStr(menu[i].name);
 		if (menu[i].get) menu[i].get();
-	
+
 		// wait for button released
 		while (!(PIND & (1<<PUSH))) ;
 
@@ -516,7 +524,7 @@ int MemoryMenu()
 			// don't forget to squelch
 			readRSSI();
 
-			// handle encoder 
+			// handle encoder
 			int c = handleRotary();
 			if (c!=0) {
 				if (c>0) {
