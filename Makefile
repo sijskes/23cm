@@ -1,7 +1,8 @@
 #
 MCU=atmega328p
 # TODO: fix to SPI programming
-AVRDUDE_FLAGS=-D -P /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A6008j1e-if00-port0 -b 57600 -c arduino
+#AVRDUDE_FLAGS=-D -P /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A6008j1e-if00-port0 -b 57600 -c arduino
+AVRDUDE_FLAGS=-D -c usbtiny
 
 DEFINES=-DBOARD2 -DADF4113
 
