@@ -1,10 +1,8 @@
 #
 MCU=atmega328p
-# TODO: fix to SPI programming
-#AVRDUDE_FLAGS=-D -P /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A6008j1e-if00-port0 -b 57600 -c arduino
-AVRDUDE_FLAGS=-D -c usbtiny
+AVRDUDE_FLAGS=-c usbtiny
 
-DEFINES=-DBOARD2 -DADF4113
+#DEFINES=-DBOARD2 -DADF4113
 
 
 # configure binaries.
@@ -67,3 +65,10 @@ main.elf : main.o lcd.o  settings.o  smeter.o  spectrum.o  vfo.o
 
 clean:
 	-rm *.o *.elf
+
+# reset fuses to factory default
+fuses:
+	avrdude $(AVRDUDE_FLAGS) -p atmega328p -U lfuse:w:0xFF:m
+	avrdude $(AVRDUDE_FLAGS) -p atmega328p -U lfuse:w:0x62:m
+	avrdude $(AVRDUDE_FLAGS) -p atmega328p -U hfuse:w:0xD9:m
+	avrdude $(AVRDUDE_FLAGS) -p atmega328p -U efuse:w:0xFF:m
