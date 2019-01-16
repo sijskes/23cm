@@ -1,6 +1,6 @@
 /*
  * 23cm JPD transceiver
- * 
+ *
  * #	change								date		by
  * ------------------------------------------------------------
  * 1.0	initial version						01-01-15	pe1jpd
@@ -46,33 +46,33 @@ ISR(INT1_vect)
 {
 	if (PIND & (1<<ROT))
  		enc++;
-	else 
+	else
 		enc--;
 
 	_delay_ms(5);
 }
 
 // Interrupt service routine Timer1
-ISR(TIMER1_OVF_vect) 
-{ 
+ISR(TIMER1_OVF_vect)
+{
 	TCNT1 = 65535-toneCount;		// restart timer
 	tick++;
 	if (tx && tone>=600)
 		tbi(PORTB, Beep);			// toggle Beep port
-} 
+}
 
-void adcInit(void) 
-{ 
+void adcInit(void)
+{
 	ADCSRA = (1<<ADPS0)|(1<<ADPS1)|(1<<ADPS2);  // prescaler /128
 #ifdef BOARD2
 	DIDR0 = (1<<ADC5D); 			// disable digital input
-	ADMUX = (1<<REFS0) + 5;			// ADC channel 5 
+	ADMUX = (1<<REFS0) + 5;			// ADC channel 5
 #endif
 #ifdef BOARD1
 	DIDR0 = (1<<ADC0D); 			// disable digital input
-	ADMUX = (1<<REFS0) + 1;			// ADC channel 1 
+	ADMUX = (1<<REFS0) + 1;			// ADC channel 1
 #endif
-} 
+}
 
 void initInterrupts(void)
 {
@@ -80,9 +80,9 @@ void initInterrupts(void)
 	EICRA |= _BV(ISC11);			// int1 on falling edge
 
 	// Setup Timer 1
-	TCCR1A = 0x00;					// Normal Mode 
+	TCCR1A = 0x00;					// Normal Mode
 	TCCR1B = 0x01;					// div/1 clock, 1/F_CPU clock
-	TIMSK1 |= (1 << TOIE1); 		// Timer1 overflow interrupt 
+	TIMSK1 |= (1 << TOIE1); 		// Timer1 overflow interrupt
 
 	// enable interrupts
 	sei();
@@ -307,7 +307,7 @@ void initPLL()
 	// set function latch
 	reg = 0x438086;
     setPLL(reg);
-    
+
     // init R-counter
 	reg = (2UL<<16) + ((F_REF/25)<<2);
     setPLL(reg);
@@ -319,18 +319,31 @@ void initPLL()
 	setPLL(reg);
 }
 
+//void setFrequency(unsigned long f)
+//{
+//	long int reg, N, A, B;
+//
+//	N = f/25;				// counter N in pll
+//	B = N/8;				// split in A and B
+//	A = N%8;
+//
+//	reg = ((B & 0x1fff)<<8) + ((A & 0x3f)<<2) + 1;
+//    setPLL(reg);				// set pll
+//}
+
 void setFrequency(unsigned long f)
 {
-	long int reg, N, A, B;
-    
-	N = f/25;				// counter N in pll
-	B = N/8;				// split in A and B
-	A = N%8;
-    
+	long int reg, frast, A, B;
+
+	frast = f/25;
+	B = frast/16;
+	A = frast%16;
+
 	reg = ((B & 0x1fff)<<8) + ((A & 0x3f)<<2) + 1;
-    setPLL(reg);				// set pll
+
+	setPLL(reg);
 }
-#endif 
+#endif
 
 #ifdef ADF4153
 void initPLL()
@@ -387,7 +400,7 @@ void setFrequency(unsigned long f)
 void setPLL(unsigned long r)
 {
     int i;
-    
+
     for (i=0; i<24; i++) {
         if (r & 0x800000)
             sbi(PORTC, DATA);
